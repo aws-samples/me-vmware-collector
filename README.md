@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-## My Project
-
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
-=======
 # VMware Data Collector
 
 ## Description
@@ -81,6 +62,13 @@ The script generates an Excel file named "VMWARE_Inventory_And_Usage_Workbook_YY
 - CPU peak and average usage
 - Memory peak and average consumption
 
-##Read More: 
+## Read More: 
 https://aws.amazon.com/blogs/migration-and-modernization/accelerating-migration-evaluator-discovery-for-vmware-environment/
->>>>>>> d2d789c (Initial commit)
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This library is licensed under the MIT-0 License. See the LICENSE file.
