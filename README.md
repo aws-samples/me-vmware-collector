@@ -1,69 +1,100 @@
-# VMware Data Collector
+# Migration Evaluator Collector Export file Data Anonymizer and De-anonymizer
 
-## Description
-This PowerShell script collects detailed inventory and performance metrics from a VMware vCenter environment. It gathers provisoning information about virtual machines, host systems, and their utilization percentages over a specified period, then exports the data to an Excel workbook.
+This Python script provides functionality to anonymize and de-anonymize ME Collector Export file containing inventory and usage data.
 
-## Prerequisites
-- PowerCLI module installed
-- ImportExcel PowerShell module installed 
-- Access to vCenter Server
-- Appropriate permissions to query VM and host statistics
+## Project Description
 
-## Features
-- Collects host information including CPU, memory, and processor details
-- Gathers VM specifications including CPU, memory, and storage allocation
-- Captures performance metrics with different sampling intervals based on historical depth:
-  - Last 2 days: 5-minute intervals
-  - 2-7 days: 30-minute intervals
-  - 8-30 days: 2-hour intervals
-  - Beyond 30 days: Daily intervals
-- Exports data to Excel with multiple worksheets:
-  - Physical Provisioning
-  - Virtual Provisioning
-  - Asset Ownership
-  - Utilization
+This tool is designed to protect sensitive information in inventory and usage data while allowing for analysis and later de-anonymization. It operates on Excel workbooks with multiple sheets containing data about asset utilization, ownership, and provisioning (both virtual and physical).
 
-## Usage
-1. Run the script in PowerShell
-2. Enter the requested information when prompted:
-   - vCenter IP address
-   - Username
-   - Password
-   - Number of collection days
+Key features include:
 
-## Output
-The script generates an Excel file named "VMWARE_Inventory_And_Usage_Workbook_YYYY-MM-DD.xlsx" containing:
-- Detailed host information
-- VM configurations
-- Resource utilization metrics
-- Asset ownership details
+- Anonymization of Excel files by replacing human-readable names with randomly generated unique identifiers
+- Removal of IP addresses from provisioning sheets
+- De-anonymization of ME Quick Insights (QI) files using the original pre-anonymized data
+- Command-line interface for easy integration into workflows
 
-## Notes
-- VMware Customer Experience Improvement Program (CEIP) is disabled
-- Only powered-on VMs are included in the collection by default
-- Performance metrics include CPU and memory usage (peak and average values)
+The anonymization process ensures that sensitive information like server names and IP addresses are removed or replaced, making the data safe for sharing or analysis. The de-anonymization feature allows authorized users to restore the original identifiers when needed, facilitating detailed insights and reporting.
 
-## Data Collection Details
-### Host Information:
-- Hostname
-- CPU count
-- Memory capacity
-- Processor type
+## Repository Structure
 
-### VM Information:
-- Server name
-- Operating system
-- CPU allocation
-- Memory allocation
-- Storage capacity
-- Host assignment
+- `collector-anonymizer.py`: The main Python script containing both anonymization and de-anonymization functions.
 
-### Performance Metrics:
-- CPU peak and average usage
-- Memory peak and average consumption
+## Usage Instructions
 
-## Read More: 
-https://aws.amazon.com/blogs/migration-and-modernization/accelerating-migration-evaluator-discovery-for-vmware-environment/
+### Installation
+
+Prerequisites:
+- Python 3.6 or higher
+- pip (Python package installer)
+
+To install the required dependencies, run:
+
+```bash
+pip install openpyxl
+```
+
+### Anonymization
+
+To anonymize an Excel file:
+
+```bash
+python collector-anonymizer.py an "path/to/your/excel_file.xlsx"
+```
+
+This will create a new file named "Inventory_And_Usage_Workbook Anonymized.xlsx" in the current directory.
+
+### De-anonymization
+
+To de-anonymize a Quick Insights (QI) zip file:
+
+```bash
+python collector-anonymizer.py de "path/to/original_excel_file.xlsx" "path/to/qi_file.zip"
+```
+
+This will create new de-anonymized files with the prefix "deanonymized_" for each file in the QI zip.
+
+### Common Use Cases
+
+1. Preparing data for external analysis:
+   ```bash
+   python collector-anonymizer.py an "Inventory_Data.xlsx"
+   ```
+
+2. Restoring original identifiers after analysis:
+   ```bash
+   python collector-anonymizer.py de "Inventory_Data.xlsx" "QuickInsights_Results.zip"
+   ```
+
+### Troubleshooting
+
+1. Issue: Script fails to run due to missing module
+   - Error message: `ModuleNotFoundError: No module named 'openpyxl'`
+   - Solution: Install the required module using `pip install openpyxl`
+
+2. Issue: Incorrect file format
+   - Error message: `zipfile.BadZipFile: File is not a zip file`
+   - Solution: Ensure that the QI file for de-anonymization is a valid zip file
+
+3. Issue: Permission denied when creating output files
+   - Error message: `PermissionError: [Errno 13] Permission denied: 'output_file.xlsx'`
+   - Solution: Ensure you have write permissions in the current directory
+
+For further debugging:
+- Run the script with the `-v` flag for verbose output
+- Check the Python error traceback for specific line numbers and error types
+
+## Data Flow
+
+The data flow in this application follows these steps:
+
+1. Input: Excel workbook (for anonymization) or Excel workbook + QI zip file (for de-anonymization)
+2. Processing:
+   - Anonymization: Replace names with IDs, remove IP addresses
+   - De-anonymization: Map IDs back to original names
+3. Output: New Excel file (anonymized) or CSV files (de-anonymized)
+
+## Read More
+https://aws.amazon.com/blogs/mt/anonymizing-sensitive-data-of-the-migration-evaluators-export-file/
 
 ## Security
 
